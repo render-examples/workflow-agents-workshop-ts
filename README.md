@@ -93,9 +93,9 @@ Run any pattern on the host:
 npm run naive:dev               # http://localhost:3000
 
 # Pattern 2: producer + worker
-npm run worker:web              # terminal A: http://localhost:3000
-npm run worker:worker           # terminal B: one worker
-npm run worker:worker           # terminal C: another worker
+npm run queue:web               # terminal A: http://localhost:3000
+npm run queue:worker            # terminal B: one worker
+npm run queue:worker            # terminal C: another worker
 
 # Pattern 3: Render Workflows
 npm run dev --workspace @workshop/workflow-agents            # in-process local mode
@@ -218,6 +218,17 @@ npm run typecheck        # TypeScript across every workspace
 
 Tests live under [`tests/`](tests) (`unit/`, `integration/`, `e2e/`). The
 `worker-kv` integration test is the red-to-green check for the Session 1 exercise.
+
+### Troubleshooting `test:worker`
+
+The worker test needs a running Valkey (or Redis) instance. If it hangs or
+skips:
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| All tests show "skipped" | `VALKEY_URL` not set in the environment | Run with the var inline: `VALKEY_URL=redis://127.0.0.1:6379 npm run test:worker` |
+| `ECONNREFUSED 127.0.0.1:6379` | No Valkey/Redis server running | Start one first: `valkey-server &` or `docker run -d -p 6379:6379 valkey/valkey` or `redis-server &` |
+| Tests pass but process hangs | Open Redis connections preventing exit (fixed in recent commits) | Update to the latest code; if still stuck, press Ctrl-C — results are valid |
 
 ## Notes
 

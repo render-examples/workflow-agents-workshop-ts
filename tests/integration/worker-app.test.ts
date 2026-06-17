@@ -1,10 +1,15 @@
 delete process.env.DATABASE_URL
 
-import { test } from 'node:test'
+import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { createApp } from '../../packages/queue-agents/src/web.js'
+import { closeValkey } from '../../packages/queue-agents/src/kv.js'
 
 const app = createApp()
+
+after(async () => {
+  await closeValkey()
+})
 
 test('worker web serves the shared telemetry viewer', async () => {
   const res = await app.fetch(new Request('http://test/'))

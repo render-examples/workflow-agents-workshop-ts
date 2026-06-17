@@ -16,6 +16,7 @@ import {
   enqueueReview,
   processEntry,
   reclaimStale,
+  closeValkey,
 } from '../../packages/queue-agents/src/kv.js'
 
 const VALKEY_URL = process.env.VALKEY_URL
@@ -32,6 +33,7 @@ describe('kv.processEntry ack semantics', { skip: !VALKEY_URL }, () => {
   after(async () => {
     await client.del(STREAM)
     client.disconnect()
+    await closeValkey()
   })
 
   async function readOne(consumer = 'tester'): Promise<{ id: string; fields: string[] } | null> {

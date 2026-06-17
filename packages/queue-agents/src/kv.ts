@@ -38,6 +38,14 @@ export function getValkey(): Redis {
   return _client
 }
 
+/** Disconnect the shared client (for graceful shutdown and test cleanup). */
+export async function closeValkey(): Promise<void> {
+  if (_client) {
+    _client.disconnect()
+    _client = undefined
+  }
+}
+
 // ── Queue ────────────────────────────────────────────────────────────────────
 
 export async function enqueueReview(job: ReviewJob): Promise<void> {
