@@ -2,7 +2,7 @@
 # Builds from the repo root so the npm workspaces resolve.
 
 projects:
-  - name: agents-workshop-queue
+  - name: queue-agents
     environments:
       - name: production
         databases:

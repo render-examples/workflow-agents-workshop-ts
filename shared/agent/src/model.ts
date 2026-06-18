@@ -2,8 +2,8 @@
  * Model adapters. A provider-agnostic ModelClient with one `complete` call.
  * Each adapter talks to its provider's API directly over `fetch` (no vendor SDK).
  *
- * Workshop nicety: when no API key is configured (or AGENT_MODEL=mock), we return
- * a deterministic MockClient so the entire pipeline runs offline.
+ * When no API key is configured (or AGENT_MODEL=mock), we return a deterministic
+ * MockClient so the entire pipeline runs offline.
  */
 import type {
   CompleteArgs,
@@ -23,11 +23,27 @@ export function resolveClient(model: ModelSpec): ModelClient {
 
   const keyEnv =
     model.apiKeyEnv ?? (model.provider === 'openai' ? 'OPENAI_API_KEY' : 'ANTHROPIC_API_KEY')
-  if (!process.env[keyEnv]) {
-    console.warn(`[agent] no ${keyEnv} set — falling back to mock model client`)
-    return new MockClient()
+  if (process.env[keyEnv]) {
+    return clientForProvider(model)
   }
 
+  // The requested provider's key isn't set — try the other provider before
+  // falling back to mock so that setting only OPENAI_API_KEY (or only
+  // ANTHROPIC_API_KEY) still produces a real review.
+  const altProvider = model.provider === 'openai' ? 'anthropic' : 'openai'
+  const altKeyEnv = altProvider === 'openai' ? 'OPENAI_API_KEY' : 'ANTHROPIC_API_KEY'
+  if (process.env[altKeyEnv]) {
+    console.warn(
+      `[agent] no ${keyEnv} set but ${altKeyEnv} found — using ${altProvider} provider`,
+    )
+    return clientForProvider({ ...model, provider: altProvider })
+  }
+
+  console.warn(`[agent] no ${keyEnv} set — falling back to mock model client`)
+  return new MockClient()
+}
+
+function clientForProvider(model: ModelSpec): ModelClient {
   switch (model.provider) {
     case 'anthropic':
       return new AnthropicClient(model)
