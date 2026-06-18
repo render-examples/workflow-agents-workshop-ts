@@ -18,7 +18,7 @@ projects:
 
         services:
           - type: web
-            name: workflow-agents
+            name: agents-gateway
             runtime: node
             region: oregon
             plan: starter
