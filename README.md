@@ -1,15 +1,12 @@
-# Render Workflow Agents Workshop
+# Render Workflow Agents — TypeScript
 
-A hands-on workshop that deploys **one agentic code-review use case** across
+An example repo showing **one agentic code-review use case** deployed across
 **three Render execution substrates**: an in-process web service, a web service
 plus queue-backed worker, and Render Workflows.
 
-You deploy the same multi-agent PR reviewer (`security`, `performance`, `ux`, then
-a `judge`) across progressively more durable execution models. Along the way, you
-open live Render URLs, inspect logs and traces in the Dashboard, and use local
-development for focused test loops.
-
-For someone facilitating this workshop, start with [`workshop/facilitator-guide.md`](workshop/facilitator-guide.md).
+The same multi-agent PR reviewer (`security`, `performance`, `ux`, then a `judge`)
+runs across progressively more durable execution models. Each pattern comes with a
+Blueprint for one-click deployment and local development scripts for focused testing.
 
 ## The three patterns
 
@@ -41,7 +38,7 @@ uses a deterministic **mock** model, so live deploys and local tests still work.
 Set `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for real reviews, or force the mock
 with `AGENT_MODEL=mock`.
 
-## Workshop path
+## Deploy
 
 Patterns 1 and 2 use Blueprints:
 
@@ -56,22 +53,11 @@ Pattern 3 uses both:
 - [`packages/workflow-agents/render.yaml`](packages/workflow-agents/render.yaml) creates the web service and Postgres database
 - `render workflows create` creates the Workflow service
 - `render workflows start` triggers task runs
-- `render logs`, `render deploys`, and the Dashboard help learners inspect what ran
-
-## Interactive beats
-
-- **Session 1 — inspect the coordination.** In queue-agents, learners trace the ack
-  contract in [`packages/queue-agents/src/kv.ts`](packages/queue-agents/src/kv.ts),
-  run the focused test with `npm run test:worker`, scale the worker, and observe
-  what they now own.
-- **Session 2 — let agents author tasks.** In workflow-agents, learners explore the
-  `your-review` sandbox and work with the small `task()` API surface. The same
-  durability that took a whole queue in Session 1 is now a config object, a live
-  task run, and a Dashboard trace.
+- `render logs`, `render deploys`, and the Dashboard show what ran
 
 ## Local development
 
-Local runs are useful for tests, facilitator prep, and debugging.
+Local runs are useful for tests and debugging.
 
 For local runs, copy the example env file:
 
@@ -139,10 +125,6 @@ shared/
   ui/                       @workshop/ui — mountable Hono telemetry viewer
                               → src/index.ts            createUiRouter() + read APIs
                               → src/page.ts             dashboard HTML template
-
-docs/                       guided walkthrough (00–05)
-
-facilitator/                facilitator notes and exercise solutions
 
 tests/                      unit, integration, and e2e tests (mock model, no API key)
                               → integration/run-review.test.ts      core pipeline end-to-end
@@ -217,7 +199,7 @@ npm run typecheck        # TypeScript across every workspace
 ```
 
 Tests live under [`tests/`](tests) (`unit/`, `integration/`, `e2e/`). The
-`worker-kv` integration test is the red-to-green check for the Session 1 exercise.
+`worker-kv` integration test validates the ack/retry contract in Pattern 2.
 
 ### Troubleshooting `test:worker`
 

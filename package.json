@@ -15,7 +15,6 @@
     "packages/workflow-agents"
   ],
   "scripts": {
-    "setup": "node scripts/setup-attendee.js",
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -p tests/tsconfig.json",
     "test": "AGENT_MODEL=mock RENDER_USE_LOCAL_DEV=true node --import tsx --test \"tests/**/*.test.ts\"",
     "test:unit": "AGENT_MODEL=mock node --import tsx --test \"tests/unit/**/*.test.ts\"",
@@ -24,14 +23,10 @@
     "test:worker": "AGENT_MODEL=mock node --import tsx --test \"tests/integration/worker-kv.test.ts\"",
     "naive:dev": "npm run dev --workspace @workshop/naive-agent",
     "queue:web": "npm run web --workspace @workshop/queue-agents",
-    "queue:worker": "npm run worker --workspace @workshop/queue-agents",
-    "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f"
+    "queue:worker": "npm run worker --workspace @workshop/queue-agents"
   },
   "dependencies": {
-    "tsx": "^4.20.5",
-    "yaml": "^2.9.0"
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

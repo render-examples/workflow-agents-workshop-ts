@@ -3,11 +3,9 @@
 # workflow-agents. Web host (Hono) + managed Postgres.
 # Builds from the repo root so the npm workspaces resolve.
 #
-# The Workflow service is created separately with the Render CLI — see
-# docs/03-workflow-agents.md.
 
 projects:
-  - name: agents-workshop-workflows
+  - name: workflow-agents
     environments:
       - name: production
         databases:
@@ -38,6 +36,13 @@ projects:
 
               # Slug of the separate Render Workflow service, for example workflow-agents
               - key: RENDER_WORKFLOW_SLUG
+                sync: false
+
+              - key: ANTHROPIC_API_KEY
+                sync: false
+              - key: OPENAI_API_KEY
+                sync: false
+              - key: GITHUB_TOKEN
                 sync: false
 
               - key: NODE_ENV
